@@ -1,31 +1,39 @@
 import Phaser from 'phaser';
 
-export default class extends Phaser.Scene {
-	preload() {
-		this.load.setBaseURL('https://labs.phaser.io');
+import blockBg from '../assets/block-bg.png';
+import block from '../assets/block.png';
+import { blockSize, screenBlocks } from '../constants';
 
-		this.load.image('sky', 'assets/skies/space3.png');
-		this.load.image('logo', 'assets/sprites/phaser3-logo.png');
-		this.load.image('red', 'assets/particles/red.png');
+export default class extends Phaser.Scene {
+	constructor(handleNextPiece) {
+		super();
+		this.nexPiece = handleNextPiece;
+	}
+
+	preload() {
+		this.load.image('blockBg', blockBg);
+		this.load.image('block', block);
 	}
 
 	create() {
-		this.add.image(400, 300, 'sky');
+		this.arrows = this.input.keyboard.createCursorKeys();
 
-		const particles = this.add.particles('red');
+		for (let i = 0; i < screenBlocks.y; i++) {
+			for (let j = 0; j < screenBlocks.x; j++) {
+				this.add.image(blockSize / 2 + blockSize * j, blockSize / 2 + blockSize * i, 'blockBg');
+				if (i === 17 || i === 18) {
+					this.add.image(blockSize / 2 + blockSize * j, blockSize / 2 + blockSize * i, 'block');
+				}
+			}
+		}
+	}
 
-		const emitter = particles.createEmitter({
-			speed: 100,
-			scale: { start: 1, end: 0 },
-			blendMode: 'ADD',
-		});
-
-		const logo = this.physics.add.image(400, 100, 'logo');
-
-		logo.setVelocity(100, 200);
-		logo.setBounce(1, 1);
-		logo.setCollideWorldBounds(true);
-
-		emitter.startFollow(logo);
+	update() {
+		if (this.arrows.up.isDown) {
+			this.nexPiece('square');
+		}
+		if (this.arrows.down.isDown) {
+			this.nexPiece('line');
+		}
 	}
 }
