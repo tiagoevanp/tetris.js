@@ -31,7 +31,7 @@ module.exports = (env) => ({
 		watchContentBase: true,
 		inline: true,
 		host: '0.0.0.0',
-		port: 3000,
+		port: 3002,
 	},
 
 	output: {
@@ -53,7 +53,7 @@ module.exports = (env) => ({
 				},
 			},
 			{
-				test: /\.mp3$/,
+				test: /\.(mp3?|ttf)$/,
 				use: [
 					{
 						loader: 'file-loader',
