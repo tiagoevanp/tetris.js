@@ -11,7 +11,7 @@ import l from './assets/l.png';
 import reverseL from './assets/reverseL.png';
 import skew from './assets/skew.png';
 import reverseSkew from './assets/reverseSkew.png';
-import Game from './scenes/game';
+import Game from './scenes/Game';
 
 const imgPiece = document.getElementById('img-piece');
 const imgEl = document.createElement('img');
