@@ -9,7 +9,7 @@ import { setupControl } from '../controls.js';
 export default class extends Phaser.Scene {
 	constructor(handleNextPiece) {
 		super();
-		this.nexPiece = handleNextPiece;
+		this.nextPiece = handleNextPiece;
 	}
 
 	preload() {
@@ -28,6 +28,7 @@ export default class extends Phaser.Scene {
 				this.add.image(blockSize / 2 + blockSize * x, blockSize / 2 + blockSize * y, 'blockBg');
 			}
 		}
+		this.nextPiece(this.map.nextPieceName);
 
 		this.fallEvent = this.time.addEvent({ delay: 1000, callback: this.fallPiece, callbackScope: this, loop: true });
 	}
@@ -82,7 +83,7 @@ export default class extends Phaser.Scene {
 				this.map.destroy = [];
 			}
 
-			this.map.resetPiece();
+			this.nextPiece(this.map.resetPiece());
 		}
 	}
 }

@@ -35,13 +35,13 @@ const handleNextPiece = (piece) => {
 		case 'l':
 			imgEl.src = l;
 			break;
-		case 'reverse-l':
+		case 'reverseL':
 			imgEl.src = reverseL;
 			break;
 		case 'skew':
 			imgEl.src = skew;
 			break;
-		case 'reverse-skew':
+		case 'reverseSkew':
 			imgEl.src = reverseSkew;
 			break;
 	}

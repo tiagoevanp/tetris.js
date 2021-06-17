@@ -8,7 +8,9 @@ export default class {
 		this.falltime = 1000;
 
 		this.pieces = ['line', 'square', 't', 'l', 'reverseL', 'skew', 'reverseSkew'];
+		this.nextPieceName = '';
 		this.piece = this.getRandomPiece();
+		this.nextPiece = this.getRandomPiece();
 		this.xPiecePosition = 3;
 		this.yPiecePosition = 0;
 
@@ -42,14 +44,19 @@ export default class {
 	resetPiece() {
 		this.xPiecePosition = 3;
 		this.yPiecePosition = 0;
-		this.piece = this.getRandomPiece();
+		this.piece = this.nextPiece;
+		this.nextPiece = this.getRandomPiece();
+
+		return this.nextPieceName;
 	}
 
 	getRandomPiece() {
 		const min = Math.ceil(0);
 		const max = Math.floor(this.pieces.length);
 
-		return pieces[this.pieces[Math.floor(Math.random() * (max - min) + min)]];
+		this.nextPieceName = this.pieces[Math.floor(Math.random() * (max - min) + min)];
+
+		return pieces[this.nextPieceName];
 	}
 
 	rotatePiece() {
