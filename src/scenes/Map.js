@@ -2,24 +2,47 @@ import { screenBlocks, pieces } from '../constants';
 
 export default class {
 	constructor() {
-		this.matrix = [];
+		this.pieceMatrix = [];
+		this.fillMatrix = [];
+		this.destroy = [];
+		this.falltime = 1000;
 
 		this.pieces = ['line', 'square', 't', 'l', 'reverseL', 'skew', 'reverseSkew'];
 		this.piece = this.getRandomPiece();
 		this.xPiecePosition = 3;
 		this.yPiecePosition = 0;
 
-		this.startMap();
+		this.startMatrix();
 	}
 
-	startMap() {
-		for (let x = 0; x < screenBlocks.y; x++) {
-			this.matrix[x] = [];
+	startMatrix() {
+		for (let y = 0; y < screenBlocks.y; y++) {
+			this.pieceMatrix[y] = [];
+			this.fillMatrix[y] = [];
 
-			for (let y = 0; y < screenBlocks.x; y++) {
-				this.matrix[x][y] = 0;
+			for (let x = 0; x < screenBlocks.x; x++) {
+				this.pieceMatrix[y][x] = 0;
+				this.fillMatrix[y][x] = 0;
 			}
 		}
+	}
+
+	cleanPieceMatrix() {
+		for (let y = 0; y < screenBlocks.y; y++) {
+			for (let x = 0; x < screenBlocks.x; x++) {
+				if (this.fillMatrix[y][x]) {
+					this.pieceMatrix[y][x] = this.fillMatrix[y][x];
+				} else {
+					this.pieceMatrix[y][x] = 0;
+				}
+			}
+		}
+	}
+
+	resetPiece() {
+		this.xPiecePosition = 3;
+		this.yPiecePosition = 0;
+		this.piece = this.getRandomPiece();
 	}
 
 	getRandomPiece() {
@@ -38,26 +61,53 @@ export default class {
 			}
 		}
 
-		this.piece = rotatedPiece;
+		if (this.doesPieceFit(rotatedPiece, this.xPiecePosition, this.yPiecePosition)) {
+			this.piece = rotatedPiece;
+		}
 	}
 
 	doesPieceFit(piece, posX, posY) {
-		for (let x = 0; x < 4; x++) {
-			for (let y = 0; y < 4; y++) {
-				const blockValue = piece[y][x];
+		for (let y = 0; y < 4; y++) {
+			for (let x = 0; x < 4; x++) {
+				const pieceBlockValue = piece[y][x];
+				const fillBlockValue = this.fillMatrix[y + posY] && this.fillMatrix[y + posY][x + posX];
+
+				if (pieceBlockValue && fillBlockValue && pieceBlockValue === fillBlockValue) {
+					return false;
+				}
 
 				if (posX + x < 0 || posX + x >= screenBlocks.x) {
-					if (blockValue) {
+					if (pieceBlockValue) {
 						return false;
 					}
 				}
 				if (posY + y < 0 || posY + y >= screenBlocks.y) {
-					if (blockValue) {
+					if (pieceBlockValue) {
 						return false;
 					}
 				}
 			}
 		}
 		return true;
+	}
+
+	detectFullLines() {
+		for (let y = 0; y < screenBlocks.y; y++) {
+			let aux = 0;
+			const line = this.fillMatrix[y];
+			const lineIdx = y;
+
+			for (let x = 0; x < line.length; x++) {
+				if (line[x] === 0) {
+					break;
+				}
+
+				aux++;
+			}
+
+			if (aux === line.length) {
+				this.destroy.push(lineIdx);
+			}
+		}
 	}
 }

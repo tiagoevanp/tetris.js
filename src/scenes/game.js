@@ -23,9 +23,9 @@ export default class extends Phaser.Scene {
 
 		setupControl(this);
 
-		for (let i = 0; i < screenBlocks.y; i++) {
-			for (let j = 0; j < screenBlocks.x; j++) {
-				this.add.image(blockSize / 2 + blockSize * j, blockSize / 2 + blockSize * i, 'blockBg');
+		for (let y = 0; y < screenBlocks.y; y++) {
+			for (let x = 0; x < screenBlocks.x; x++) {
+				this.add.image(blockSize / 2 + blockSize * x, blockSize / 2 + blockSize * y, 'blockBg');
 			}
 		}
 
@@ -34,12 +34,12 @@ export default class extends Phaser.Scene {
 
 	update() {
 		this.pieceGroup.clear(true);
-		this.map.startMap();
+		this.map.cleanPieceMatrix();
 		this.plotPiece(this.map.piece);
 
 		for (let x = 0; x < screenBlocks.x; x++) {
 			for (let y = 0; y < screenBlocks.y; y++) {
-				if (this.map.matrix[x][y]) {
+				if (this.map.pieceMatrix[y][x]) {
 					this.pieceGroup.add(this.add.image(blockSize / 2 + blockSize * x, blockSize / 2 + blockSize * y, 'block'));
 				}
 			}
@@ -47,10 +47,20 @@ export default class extends Phaser.Scene {
 	}
 
 	plotPiece(piece) {
-		for (let x = 0; x < 4; x++) {
-			for (let y = 0; y < 4; y++) {
-				if (this.map.xPiecePosition + x >= 0) {
-					this.map.matrix[this.map.xPiecePosition + x][this.map.yPiecePosition + y] = piece[y][x];
+		for (let y = 0; y < 4; y++) {
+			for (let x = 0; x < 4; x++) {
+				if (piece[y][x]) {
+					this.map.pieceMatrix[this.map.yPiecePosition + y][this.map.xPiecePosition + x] = piece[y][x];
+				}
+			}
+		}
+	}
+
+	fillMatrix(piece) {
+		for (let y = 0; y < 4; y++) {
+			for (let x = 0; x < 4; x++) {
+				if (piece[y][x]) {
+					this.map.fillMatrix[this.map.yPiecePosition + y][this.map.xPiecePosition + x] = piece[y][x];
 				}
 			}
 		}
@@ -59,6 +69,20 @@ export default class extends Phaser.Scene {
 	fallPiece() {
 		if (this.map.doesPieceFit(this.map.piece, this.map.xPiecePosition, this.map.yPiecePosition + 1)) {
 			this.map.yPiecePosition += 1;
+		} else {
+			this.fillMatrix(this.map.piece);
+			this.map.detectFullLines();
+
+			if (this.map.destroy.length) {
+				this.map.destroy.forEach((lineIdx) => {
+					this.map.fillMatrix.splice(lineIdx, 1);
+					this.map.fillMatrix.unshift([0, 0, 0, 0, 0, 0, 0, 0, 0]);
+				});
+
+				this.map.destroy = [];
+			}
+
+			this.map.resetPiece();
 		}
 	}
 }
