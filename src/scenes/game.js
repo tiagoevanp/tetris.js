@@ -3,13 +3,17 @@ import Phaser from 'phaser';
 import Map from './Map';
 import blockBg from '../assets/block-bg.png';
 import block from '../assets/block.png';
-import { blockSize, screenBlocks } from '../constants';
+import { blockSize, screenBlocks, points } from '../constants';
 import { setupControl } from '../controls.js';
 
 export default class extends Phaser.Scene {
 	constructor(handleNextPiece) {
 		super();
 		this.nextPiece = handleNextPiece;
+		this.fallTime = 1000;
+		this.score = 16000;
+		this.level = 0;
+		this.speed = 0;
 	}
 
 	preload() {
@@ -30,7 +34,7 @@ export default class extends Phaser.Scene {
 		}
 		this.nextPiece(this.map.nextPieceName);
 
-		this.fallEvent = this.time.addEvent({ delay: 1000, callback: this.fallPiece, callbackScope: this, loop: true });
+		this.fallEvent = this.time.addEvent({ delay: this.fallTime - (this.speed + 1) * 100, callback: this.fallPiece, callbackScope: this, loop: true });
 	}
 
 	update() {
@@ -67,6 +71,27 @@ export default class extends Phaser.Scene {
 		}
 	}
 
+	setScore(lines) {
+		this.score += points[lines];
+		document.getElementById('score').innerHTML = String(this.score).padStart(6, '0');
+
+		this.setLevel(this.score);
+	}
+
+	setLevel(score) {
+		this.level = parseInt(score / 1000);
+		document.getElementById('level').innerHTML = this.level;
+
+		this.setSpeed(this.level);
+	}
+
+	setSpeed(level) {
+		this.speed = parseInt(level / 2);
+		document.getElementById('speed').innerHTML = this.speed;
+
+		this.fallEvent.reset({ delay: this.fallTime - (this.speed + 1) * 100, callback: this.fallPiece, callbackScope: this, loop: true });
+	}
+
 	fallPiece() {
 		if (this.map.doesPieceFit(this.map.piece, this.map.xPiecePosition, this.map.yPiecePosition + 1)) {
 			this.map.yPiecePosition += 1;
@@ -75,6 +100,7 @@ export default class extends Phaser.Scene {
 			this.map.detectFullLines();
 
 			if (this.map.destroy.length) {
+				this.setScore(this.map.destroy.length);
 				this.map.destroy.forEach((lineIdx) => {
 					this.map.fillMatrix.splice(lineIdx, 1);
 					this.map.fillMatrix.unshift([0, 0, 0, 0, 0, 0, 0, 0, 0]);

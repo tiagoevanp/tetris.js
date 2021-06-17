@@ -1,6 +1,11 @@
 export const screenBlocks = { x: 9, y: 19 };
 export const blockSize = 20;
-
+export const points = {
+	1: 40,
+	2: 100,
+	3: 300,
+	4: 1200,
+};
 export const pieces = {
 	line: [
 		[0, 1, 0, 0], // 1, 1, 1, 1     0,0 3,0  0,1 2,0  0,2 1,0  0,3 0,0

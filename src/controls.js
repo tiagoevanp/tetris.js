@@ -12,14 +12,14 @@ export const setupControl = (context) => {
 	});
 
 	context.input.keyboard.on('keydown-DOWN', () => {
-		if (context.map.fallTime > 80) {
-			context.map.fallTime = 80;
-			context.fallEvent.reset({ delay: context.map.fallTime, callback: context.fallPiece, callbackScope: context, loop: true });
+		if (context.fallTime > 80) {
+			context.fallTime = 80;
+			context.fallEvent.reset({ delay: context.fallTime, callback: context.fallPiece, callbackScope: context, loop: true });
 		}
 	});
 
 	context.input.keyboard.on('keyup-DOWN', () => {
-		context.map.fallTime = 1000;
-		context.fallEvent.reset({ delay: context.map.fallTime, callback: context.fallPiece, callbackScope: context, loop: true });
+		context.fallTime = 1000;
+		context.fallEvent.reset({ delay: context.fallTime - (context.speed + 1) * 100, callback: context.fallPiece, callbackScope: context, loop: true });
 	});
 };
