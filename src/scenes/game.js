@@ -11,7 +11,7 @@ export default class extends Phaser.Scene {
 		super();
 		this.nextPiece = handleNextPiece;
 		this.fallTime = 1000;
-		this.score = 16000;
+		this.score = 0;
 		this.level = 0;
 		this.speed = 0;
 	}
@@ -40,7 +40,13 @@ export default class extends Phaser.Scene {
 	update() {
 		this.pieceGroup.clear(true);
 		this.map.cleanPieceMatrix();
-		this.plotPiece(this.map.piece);
+
+		if (!this.map.gameOver) {
+			this.plotPiece(this.map.piece);
+		} else {
+			this.fallEvent.remove();
+			this.nextPiece('empty');
+		}
 
 		for (let x = 0; x < screenBlocks.x; x++) {
 			for (let y = 0; y < screenBlocks.y; y++) {
