@@ -3,12 +3,14 @@ import Phaser from 'phaser';
 import Map from './Map';
 import blockBg from '../assets/block-bg.png';
 import block from '../assets/block.png';
-import { blockSize, screenBlocks, points } from '../constants';
+import { blockSize, screenBlocks, points, gameOver } from '../constants';
 import { setupControl } from '../controls.js';
 
 export default class extends Phaser.Scene {
 	constructor(handleNextPiece) {
 		super();
+		this.gameOver = false;
+		this.keyDown = false;
 		this.nextPiece = handleNextPiece;
 		this.fallTime = 1000;
 		this.score = 0;
@@ -24,6 +26,8 @@ export default class extends Phaser.Scene {
 	create() {
 		this.map = new Map();
 		this.pieceGroup = this.add.group();
+
+		this.setHiScore();
 
 		setupControl(this);
 
@@ -41,11 +45,8 @@ export default class extends Phaser.Scene {
 		this.pieceGroup.clear(true);
 		this.map.cleanPieceMatrix();
 
-		if (!this.map.gameOver) {
+		if (!this.gameOver) {
 			this.plotPiece(this.map.piece);
-		} else {
-			this.fallEvent.remove();
-			this.nextPiece('empty');
 		}
 
 		for (let x = 0; x < screenBlocks.x; x++) {
@@ -81,21 +82,41 @@ export default class extends Phaser.Scene {
 		this.score += points[lines];
 		document.getElementById('score').innerHTML = String(this.score).padStart(6, '0');
 
-		this.setLevel(this.score);
+		switch (this.score) {
+			case 2000:
+				this.setLevel(1);
+				break;
+			case 4000:
+				this.setLevel(2);
+				break;
+			case 6000:
+				this.setLevel(3);
+				break;
+		}
 	}
 
-	setLevel(score) {
-		this.level = parseInt(score / 1000);
+	setHiScore() {
+		document.getElementById('hi-score').innerHTML = String(window.localStorage.getItem('hi-score')).padStart(6, '0');
+	}
+
+	setLevel(level) {
+		this.level = level;
 		document.getElementById('level').innerHTML = this.level;
 
-		this.setSpeed(this.level);
+		this.setSpeed(parseInt(this.level / 2));
 	}
 
-	setSpeed(level) {
-		this.speed = parseInt(level / 2);
+	setSpeed(speed) {
+		this.speed = speed;
 		document.getElementById('speed').innerHTML = this.speed;
+	}
 
+	setNormalSpeed() {
 		this.fallEvent.reset({ delay: this.fallTime - (this.speed + 1) * 100, callback: this.fallPiece, callbackScope: this, loop: true });
+	}
+
+	setFixedSpeed(speed) {
+		this.fallEvent.reset({ delay: speed, callback: this.fallPiece, callbackScope: this, loop: true });
 	}
 
 	fallPiece() {
@@ -115,7 +136,23 @@ export default class extends Phaser.Scene {
 				this.map.destroy = [];
 			}
 
-			this.nextPiece(this.map.resetPiece());
+			if (!this.map.doesPieceFit(this.map.nextPiece, 3, 0)) {
+				this.setGameOver();
+			}
+
+			if (!this.gameOver) {
+				this.nextPiece(this.map.resetPiece());
+			}
 		}
+	}
+
+	setGameOver() {
+		this.gameOver = true;
+		this.fallEvent.remove();
+		this.nextPiece('empty');
+		this.map.fillMatrix = gameOver;
+
+		this.score > window.localStorage.getItem('hi-score') && window.localStorage.setItem('hi-score', this.score);
+		this.setHiScore();
 	}
 }

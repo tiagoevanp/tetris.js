@@ -1,12 +1,10 @@
-import { screenBlocks, pieces, gameOver } from '../constants';
+import { screenBlocks, pieces } from '../constants';
 
 export default class {
 	constructor() {
 		this.pieceMatrix = [];
 		this.fillMatrix = [];
 		this.destroy = [];
-		this.falltime = 1000;
-		this.gameOver = false;
 
 		this.pieces = ['line', 'square', 't', 'l', 'reverseL', 'skew', 'reverseSkew'];
 		this.nextPieceName = '';
@@ -42,16 +40,7 @@ export default class {
 		}
 	}
 
-	setGameOver() {
-		this.gameOver = true;
-		this.fillMatrix = gameOver;
-	}
-
 	resetPiece() {
-		if (!this.doesPieceFit(this.nextPiece, 3, 0)) {
-			this.setGameOver();
-		}
-
 		this.xPiecePosition = 3;
 		this.yPiecePosition = 0;
 		this.piece = this.nextPiece;
