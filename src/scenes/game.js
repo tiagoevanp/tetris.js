@@ -117,6 +117,7 @@ export default class extends Phaser.Scene {
 		this.speed = 0;
 		this.score = 0;
 
+		this.sound.stopAll();
 		document.getElementById('score').innerHTML = String(this.score).padStart(6, '0');
 	}
 
