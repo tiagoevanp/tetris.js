@@ -2,15 +2,10 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <meta title="Tetris.js">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
+        <title>Tetris.js</title>
+		<link rel="icon" href="./resources/block.png">
 	<style>
-		@font-face {
-			font-family: "DigitalDisplay";
-			src: url("./resources/DigitalDisplayTfb-y6oZ.ttf");
-		}
-
 		html, body {
 			margin: 0;
 			padding: 0;
@@ -69,11 +64,15 @@
 
 		#buttons {
 			width: 400px;
-			margin-top: 170px;
+			margin-top: 120px;
 			display: flex;
 			justify-content: space-around;
 			color: white;
 			font-size: 18px;
+		}
+
+		#sound-image {
+			visibility: visible;
 		}
 
 		.button {
@@ -83,8 +82,8 @@
 			margin-bottom: 10px;
 			cursor: pointer;
 		}
-
 	</style>
+	</head>
     <body>
 		<div id='bg'>
 			<div id='wrapper'>

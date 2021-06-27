@@ -1,6 +1,8 @@
 import Phaser from 'phaser';
 
 import Map from './Map';
+import mainMusic from '../assets/tetris-gameboy.mp3';
+import beep from '../assets/beep.mp3';
 import blockBg from '../assets/block-bg.png';
 import block from '../assets/block.png';
 import { blockSize, screenBlocks, points, gameOver } from '../constants';
@@ -18,10 +20,11 @@ export default class extends Phaser.Scene {
 		this.speed = 0;
 	}
 
-	onClickMute() {
+	onClickMute(sound) {
 		const { visibility } = document.getElementById('sound-image').style;
 		document.getElementById('sound-image').style.visibility = visibility === 'hidden' ? 'visible' : 'hidden';
-		// TODO: make sound and handle with it
+
+		sound.mute = document.getElementById('sound-image').style.visibility === 'hidden';
 	}
 
 	onClickReset(scene) {
@@ -29,16 +32,19 @@ export default class extends Phaser.Scene {
 	}
 
 	onClickAbout() {
-		console.log('about');
+		window.open('https://github.com/tiagoevanp/tetris.js', '_blank');
 	}
 
 	preload() {
+		this.load.audio('main-music', mainMusic);
+		this.load.audio('beep', beep);
+
 		this.load.image('blockBg', blockBg);
 		this.load.image('block', block);
 	}
 
 	create() {
-		document.getElementById('mute').onclick = this.onClickMute;
+		document.getElementById('mute').onclick = () => this.onClickMute(this.sound);
 		document.getElementById('reset').onclick = () => this.onClickReset(this.scene);
 		document.getElementById('about').onclick = this.onClickAbout;
 
@@ -59,6 +65,11 @@ export default class extends Phaser.Scene {
 		this.nextPiece(this.map.nextPieceName);
 
 		this.fallEvent = this.time.addEvent({ delay: this.fallTime - (this.speed + 1) * 100, callback: this.fallPiece, callbackScope: this, loop: true });
+
+		this.beepSound = this.sound.add('beep');
+		this.mainMusicSound = this.sound.add('main-music', { loop: true });
+
+		this.mainMusicSound.play();
 	}
 
 	update() {
@@ -164,6 +175,7 @@ export default class extends Phaser.Scene {
 			}
 
 			if (!this.gameOver) {
+				this.beepSound.play();
 				this.nextPiece(this.map.resetPiece());
 			}
 		}
@@ -171,6 +183,7 @@ export default class extends Phaser.Scene {
 
 	setGameOver() {
 		this.gameOver = true;
+		this.mainMusicSound.stop();
 		this.fallEvent.remove();
 		this.nextPiece('empty');
 		this.map.fillMatrix = gameOver;

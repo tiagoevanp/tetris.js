@@ -53,7 +53,7 @@ module.exports = (env) => ({
 				},
 			},
 			{
-				test: /\.(mp3?|ttf)$/,
+				test: /\.(mp3?|ttf?)$/,
 				use: [
 					{
 						loader: 'file-loader',

@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 
 import { screenBlocks, blockSize } from './constants';
+import font from './assets/digital-display-tfb-font/DigitalDisplayTfb-y6oZ.ttf';
 import bg from './assets/bg.png';
 import button from './assets/button.png';
 import empty from './assets/empty.png';
@@ -12,6 +13,15 @@ import reverseL from './assets/reverseL.png';
 import skew from './assets/skew.png';
 import reverseSkew from './assets/reverseSkew.png';
 import Game from './scenes/Game';
+
+const newStyle = document.createElement('style');
+newStyle.appendChild(document.createTextNode(`\
+@font-face {\
+    font-family: DigitalDisplay;\
+    src: url('${ font }');\
+}\
+`));
+document.head.appendChild(newStyle);
 
 const bgEl = document.getElementById('bg');
 bgEl.style.backgroundImage = `url(${ bg }`;
