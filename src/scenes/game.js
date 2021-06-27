@@ -9,13 +9,27 @@ import { setupControl } from '../controls.js';
 export default class extends Phaser.Scene {
 	constructor(handleNextPiece) {
 		super();
+		this.nextPiece = handleNextPiece;
 		this.gameOver = false;
 		this.keyDown = false;
-		this.nextPiece = handleNextPiece;
 		this.fallTime = 1000;
 		this.score = 0;
 		this.level = 0;
 		this.speed = 0;
+	}
+
+	onClickMute() {
+		const { visibility } = document.getElementById('sound-image').style;
+		document.getElementById('sound-image').style.visibility = visibility === 'hidden' ? 'visible' : 'hidden';
+		// TODO: make sound and handle with it
+	}
+
+	onClickReset(scene) {
+		scene.restart();
+	}
+
+	onClickAbout() {
+		console.log('about');
 	}
 
 	preload() {
@@ -24,6 +38,12 @@ export default class extends Phaser.Scene {
 	}
 
 	create() {
+		document.getElementById('mute').onclick = this.onClickMute;
+		document.getElementById('reset').onclick = () => this.onClickReset(this.scene);
+		document.getElementById('about').onclick = this.onClickAbout;
+
+		this.resetGame();
+
 		this.map = new Map();
 		this.pieceGroup = this.add.group();
 
@@ -76,6 +96,17 @@ export default class extends Phaser.Scene {
 				}
 			}
 		}
+	}
+
+	resetGame() {
+		this.gameOver = false;
+		this.keyDown = false;
+		this.fallTime = 1000;
+		this.level = 0;
+		this.speed = 0;
+		this.score = 0;
+
+		document.getElementById('score').innerHTML = String(this.score).padStart(6, '0');
 	}
 
 	setScore(lines) {
