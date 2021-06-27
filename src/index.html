@@ -3,6 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta title="Tetris.js">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
 	<style>
 		@font-face {
@@ -16,6 +17,8 @@
 			height: 100%;
 			width: 100%;
 			font-family: "DigitalDisplay";
+			text-align: center;
+			background-color: #c9c9c9;
 		}
 
 		canvas {
@@ -28,21 +31,33 @@
 			margin: 0;
 		}
 
-		#wrapper {
+		#bg {
+			display: flex;
+			align-items: flex-start;
 			height: 100%;
-			width: 100%;
+			width: 800px;
+			margin: auto;
+			image-rendering: pixelated;
+		}
+
+		#wrapper {
+			top: 80px;
+			width: 800px;
 			position: relative;
 			display: flex;
-			justify-content: center;
+			flex-direction: column;
 			align-items: center;
-			background-color: #1f1f1f;
 		}
 
 		#phaser-game {
+			top: -200px;
 			background-color: #89a25a;
 			padding: 4px;
 			display: flex;
 			flex-direction: row-reverse;
+			border: #121212 solid 8px;
+			border-bottom: grey solid 8px;
+			border-right: grey solid 8px;
 		}
 
 		#game-hud {
@@ -51,36 +66,70 @@
 			padding-right: 10px;
 			text-align: center;
 		}
+
+		#buttons {
+			width: 400px;
+			margin-top: 170px;
+			display: flex;
+			justify-content: space-around;
+			color: white;
+			font-size: 18px;
+		}
+
+		.button {
+			image-rendering: pixelated;
+			width: 40px;
+			height: 40px;
+			margin-bottom: 10px;
+			cursor: pointer;
+		}
+
 	</style>
     <body>
-		<div id='wrapper'>
-			<div id='phaser-game'>
-				<div id='game-hud'>
+		<div id='bg'>
+			<div id='wrapper'>
+				<div id='phaser-game'>
+					<div id='game-hud'>
+						<div>
+							<h1>SCORE</h1>
+							<h2 id='score'>000000</h2>
+						</div>
+						<div>
+							<h1>HI-SCORE</h1>
+							<h2 id='hi-score'>000000</h2>
+						</div>
+						<div id='img-piece'></div>
+						<div>
+							<h1>SPEED</h1>
+							<h2 id='speed'>0</h2>
+						</div>
+						<div>
+							<h1>LEVEL</h1>
+							<h2 id='level'>0</h2>
+						</div>
+						<div style="width: 24px; margin:auto; margin-top: 20px;">
+							<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 32 32">
+								<g>
+									<path d="M20.4,2.9c-0.3-0.2-0.7-0.1-1,0.1L9.7,10H3c-0.6,0-1,0.4-1,1v10c0,0.6,0.4,1,1,1h6.7l9.7,7.1c0.2,0.1,0.4,0.2,0.6,0.2   c0.2,0,0.3,0,0.5-0.1c0.3-0.2,0.5-0.5,0.5-0.9V3.8C21,3.4,20.8,3,20.4,2.9z"/>
+									<path d="M27.1,9.3c-0.4-0.4-1-0.4-1.4,0s-0.4,1,0,1.4C27.2,12.1,28,14,28,16s-0.8,3.9-2.3,5.3c-0.4,0.4-0.4,1,0,1.4   c0.2,0.2,0.5,0.3,0.7,0.3c0.2,0,0.5-0.1,0.7-0.3C29,20.9,30,18.6,30,16S29,11.1,27.1,9.3z"/>
+									<path d="M24.7,12.7c-0.4-0.4-1-0.4-1.4,0.1c-0.4,0.4-0.3,1,0.1,1.4c0.5,0.5,0.8,1.2,0.8,1.9s-0.3,1.4-0.8,1.9   c-0.4,0.4-0.4,1-0.1,1.4c0.2,0.2,0.5,0.3,0.7,0.3c0.2,0,0.5-0.1,0.7-0.3c1-0.9,1.5-2.1,1.5-3.3S25.6,13.5,24.7,12.7z"/>
+								</g>
+							</svg>
+						</div>
+					</div>
+				</div>
+				<div id='buttons'>
 					<div>
-						<h1>SCORE</h1>
-						<h2 id='score'>000000</h2>
+						<div id='mute' class='button'></div>
+						mute
 					</div>
 					<div>
-						<h1>HI-SCORE</h1>
-						<h2 id='hi-score'>000000</h2>
-					</div>
-					<div id='img-piece'></div>
-					<div>
-						<h1>SPEED</h1>
-						<h2 id='speed'>0</h2>
+						<div id='reset' class='button'></div>
+						reset
 					</div>
 					<div>
-						<h1>LEVEL</h1>
-						<h2 id='level'>0</h2>
-					</div>
-					<div style="width: 24px; margin:auto; margin-top: 20px;">
-						<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 32 32">
-							<g>
-								<path d="M20.4,2.9c-0.3-0.2-0.7-0.1-1,0.1L9.7,10H3c-0.6,0-1,0.4-1,1v10c0,0.6,0.4,1,1,1h6.7l9.7,7.1c0.2,0.1,0.4,0.2,0.6,0.2   c0.2,0,0.3,0,0.5-0.1c0.3-0.2,0.5-0.5,0.5-0.9V3.8C21,3.4,20.8,3,20.4,2.9z"/>
-								<path d="M27.1,9.3c-0.4-0.4-1-0.4-1.4,0s-0.4,1,0,1.4C27.2,12.1,28,14,28,16s-0.8,3.9-2.3,5.3c-0.4,0.4-0.4,1,0,1.4   c0.2,0.2,0.5,0.3,0.7,0.3c0.2,0,0.5-0.1,0.7-0.3C29,20.9,30,18.6,30,16S29,11.1,27.1,9.3z"/>
-								<path d="M24.7,12.7c-0.4-0.4-1-0.4-1.4,0.1c-0.4,0.4-0.3,1,0.1,1.4c0.5,0.5,0.8,1.2,0.8,1.9s-0.3,1.4-0.8,1.9   c-0.4,0.4-0.4,1-0.1,1.4c0.2,0.2,0.5,0.3,0.7,0.3c0.2,0,0.5-0.1,0.7-0.3c1-0.9,1.5-2.1,1.5-3.3S25.6,13.5,24.7,12.7z"/>
-							</g>
-						</svg>
+						<div id='about' class='button'></div>
+						about
 					</div>
 				</div>
 			</div>

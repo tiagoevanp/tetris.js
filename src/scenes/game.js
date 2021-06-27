@@ -82,17 +82,9 @@ export default class extends Phaser.Scene {
 		this.score += points[lines];
 		document.getElementById('score').innerHTML = String(this.score).padStart(6, '0');
 
-		switch (this.score) {
-			case 2000:
-				this.setLevel(1);
-				break;
-			case 4000:
-				this.setLevel(2);
-				break;
-			case 6000:
-				this.setLevel(3);
-				break;
-		}
+		const newLevel = parseInt(this.score / 1000);
+
+		this.setLevel(newLevel);
 	}
 
 	setHiScore() {

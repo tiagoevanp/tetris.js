@@ -1,8 +1,8 @@
-import './assets/digital-display-tfb-font/DigitalDisplayTfb-y6oZ.ttf';
-
 import Phaser from 'phaser';
 
 import { screenBlocks, blockSize } from './constants';
+import bg from './assets/bg.png';
+import button from './assets/button.png';
 import empty from './assets/empty.png';
 import line from './assets/line.png';
 import square from './assets/square.png';
@@ -12,6 +12,18 @@ import reverseL from './assets/reverseL.png';
 import skew from './assets/skew.png';
 import reverseSkew from './assets/reverseSkew.png';
 import Game from './scenes/Game';
+
+const bgEl = document.getElementById('bg');
+bgEl.style.backgroundImage = `url(${ bg }`;
+bgEl.style.backgroundRepeat = 'no-repeat';
+bgEl.style.backgroundSize = '100%';
+
+const buttonEls = document.getElementsByClassName('button');
+Array.prototype.forEach.call(buttonEls, (el) => {
+	el.style.backgroundImage = `url(${ button })`;
+	el.style.backgroundRepeat = 'no-repeat';
+	el.style.backgroundSize = '100%';
+});
 
 const imgPiece = document.getElementById('img-piece');
 const imgEl = document.createElement('img');
