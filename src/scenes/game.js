@@ -137,7 +137,8 @@ export default class extends Phaser.Scene {
 	}
 
 	setHiScore() {
-		document.getElementById('hi-score').innerHTML = String(window.localStorage.getItem('hi-score')).padStart(6, '0');
+		const localScore = window.localStorage.getItem('hi-score');
+		document.getElementById('hi-score').innerHTML = localScore ? String(localScore).padStart(6, '0') : '000000';
 	}
 
 	setLevel(level) {
