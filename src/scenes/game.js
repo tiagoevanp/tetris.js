@@ -2,7 +2,9 @@ import Phaser from 'phaser';
 
 import Map from './Map';
 import mainMusic from '../assets/tetris-gameboy.mp3';
+import breakBlocks from '../assets/break.mp3';
 import beep from '../assets/beep.mp3';
+import hook from '../assets/hook.mp3';
 import blockBg from '../assets/block-bg.png';
 import block from '../assets/block.png';
 import { blockSize, screenBlocks, points, gameOver } from '../constants';
@@ -38,6 +40,8 @@ export default class extends Phaser.Scene {
 	preload() {
 		this.load.audio('main-music', mainMusic);
 		this.load.audio('beep', beep);
+		this.load.audio('hook', hook);
+		this.load.audio('break', breakBlocks);
 
 		this.load.image('blockBg', blockBg);
 		this.load.image('block', block);
@@ -66,6 +70,8 @@ export default class extends Phaser.Scene {
 
 		this.fallEvent = this.time.addEvent({ delay: this.fallTime - (this.speed + 1) * 100, callback: this.fallPiece, callbackScope: this, loop: true });
 
+		this.hookSound = this.sound.add('hook');
+		this.breakSound = this.sound.add('break');
 		this.beepSound = this.sound.add('beep');
 		this.mainMusicSound = this.sound.add('main-music', { loop: true });
 
@@ -162,6 +168,7 @@ export default class extends Phaser.Scene {
 			this.map.detectFullLines();
 
 			if (this.map.destroy.length) {
+				this.breakSound.play();
 				this.setScore(this.map.destroy.length);
 				this.map.destroy.forEach((lineIdx) => {
 					this.map.fillMatrix.splice(lineIdx, 1);
@@ -176,7 +183,7 @@ export default class extends Phaser.Scene {
 			}
 
 			if (!this.gameOver) {
-				this.beepSound.play();
+				this.hookSound.play();
 				this.nextPiece(this.map.resetPiece());
 			}
 		}
