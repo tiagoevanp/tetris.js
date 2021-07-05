@@ -35,37 +35,26 @@ Array.prototype.forEach.call(buttonEls, (el) => {
 	el.style.backgroundSize = '100%';
 });
 
+const images = { empty, line, square, t, l, reverseL, skew, reverseSkew };
+const imageKeys = Object.keys(images);
 const imgPiece = document.getElementById('img-piece');
-const imgEl = document.createElement('img');
-imgEl.src = empty;
-imgPiece.appendChild(imgEl);
+const imgEl = [];
+
+for (let i = 0; i < imageKeys.length; i++) {
+	imgEl[i] = document.createElement('img');
+	imgEl[i].style.display = 'none';
+	imgEl[i].src = images[imageKeys[i]];
+	imgPiece.appendChild(imgEl[i]);
+}
+
 
 const handleNextPiece = (piece) => {
-	switch (piece) {
-		case 'empty':
-			imgEl.src = empty;
-			break;
-		case 'line':
-			imgEl.src = line;
-			break;
-		case 'square':
-			imgEl.src = square;
-			break;
-		case 't':
-			imgEl.src = t;
-			break;
-		case 'l':
-			imgEl.src = l;
-			break;
-		case 'reverseL':
-			imgEl.src = reverseL;
-			break;
-		case 'skew':
-			imgEl.src = skew;
-			break;
-		case 'reverseSkew':
-			imgEl.src = reverseSkew;
-			break;
+	for (let i = 0; i < imageKeys.length; i ++) {
+		if (imageKeys[i] === piece) {
+			imgEl[i].style.display = 'block';
+		} else {
+			imgEl[i].style.display = 'none';
+		}
 	}
 };
 
