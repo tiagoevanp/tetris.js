@@ -16,6 +16,7 @@ export default class extends Phaser.Scene {
 		this.nextPiece = handleNextPiece;
 		this.gameOver = false;
 		this.keyDown = false;
+		this.paused = false;
 		this.fallTime = 1000;
 		this.score = 0;
 		this.level = 0;
@@ -27,6 +28,11 @@ export default class extends Phaser.Scene {
 		document.getElementById('sound-image').style.visibility = visibility === 'hidden' ? 'visible' : 'hidden';
 
 		sound.mute = document.getElementById('sound-image').style.visibility === 'hidden';
+	}
+
+	onClickPause(scene) {
+		this.paused ? scene.resume() : scene.pause();
+		this.paused = !this.paused;
 	}
 
 	onClickReset(scene) {
@@ -49,6 +55,7 @@ export default class extends Phaser.Scene {
 
 	create() {
 		document.getElementById('mute').onclick = () => this.onClickMute(this.sound);
+		document.getElementById('pause').onclick = () => this.onClickPause(this.scene);
 		document.getElementById('reset').onclick = () => this.onClickReset(this.scene);
 		document.getElementById('about').onclick = this.onClickAbout;
 
