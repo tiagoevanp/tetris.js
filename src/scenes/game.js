@@ -66,7 +66,7 @@ export default class extends Phaser.Scene {
 
 		this.setHiScore();
 
-		setupControl(this);
+		setupControl(this, { screenBlocks, blockSize });
 
 		for (let y = 0; y < screenBlocks.y; y++) {
 			for (let x = 0; x < screenBlocks.x; x++) {
