@@ -24,9 +24,16 @@ newStyle.appendChild(document.createTextNode(`\
 document.head.appendChild(newStyle);
 
 const bgEl = document.getElementById('bg');
-bgEl.style.backgroundImage = `url(${ bg }`;
-bgEl.style.backgroundRepeat = 'no-repeat';
-bgEl.style.backgroundSize = '100%';
+const wrapperEl = document.getElementById('wrapper');
+
+if (window.screen.width < '900') {
+	bgEl.replaceWith(...bgEl.childNodes);
+	wrapperEl.replaceWith(...wrapperEl.childNodes);
+} else {
+	bgEl.style.backgroundImage = `url(${ bg }`;
+	bgEl.style.backgroundRepeat = 'no-repeat';
+	bgEl.style.backgroundSize = '100%';
+}
 
 const buttonEls = document.getElementsByClassName('button');
 Array.prototype.forEach.call(buttonEls, (el) => {
