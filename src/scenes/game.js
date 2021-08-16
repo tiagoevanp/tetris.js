@@ -31,6 +31,9 @@ export default class extends Phaser.Scene {
 	}
 
 	onClickPause(scene) {
+		const { visibility } = document.getElementById('pause-image').style;
+		document.getElementById('pause-image').style.visibility = visibility === 'hidden' ? 'visible' : 'hidden';
+
 		this.paused ? scene.resume() : scene.pause();
 		this.paused = !this.paused;
 	}
